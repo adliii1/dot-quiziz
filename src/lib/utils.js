@@ -63,12 +63,6 @@ export function shuffle(array) {
   return arr;
 }
 
-export function decodeHtml(text) {
-  const textarea = document.createElement("textarea");
-  textarea.innerHTML = text;
-  return textarea.value;
-}
-
 export const saveQuizSession = (session) => {
   localStorage.setItem(LOCALSTORAGEKEY, JSON.stringify(session));
 };
