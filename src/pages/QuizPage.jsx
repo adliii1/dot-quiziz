@@ -8,7 +8,7 @@ import {
   saveQuizSession,
 } from "@/lib/utils";
 import { CheckCircle2, Clock, XCircle } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 const QuizPage = () => {
@@ -21,9 +21,8 @@ const QuizPage = () => {
   const { questions, answers, currentIndex, submitted, autoSubmitted } =
     session;
   const currentQuestion = questions[currentIndex];
-  const selectedAnswer = answers[currentIndex];
 
-  const updateSession = useCallback((updater) => {
+  const updateSession = (updater) => {
     setSession((prev) => {
       if (!prev) return prev;
       const next =
@@ -31,12 +30,13 @@ const QuizPage = () => {
       saveQuizSession(next);
       return next;
     });
-  }, []);
+  };
 
   const handleSelect = (optionIndex) => {
     if (!session || session?.submitted) return;
 
-    const isLastQuestion = session.currentIndex === session.questions.length - 1;
+    const isLastQuestion =
+      session.currentIndex === session.questions.length - 1;
 
     updateSession((prev) => {
       const updateAnswer = {
@@ -214,12 +214,7 @@ const QuizPage = () => {
                   key={idx}
                   role="radio"
                   onClick={() => handleSelect(idx)}
-                  className={cn(
-                    "cursor-pointer transition-all border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    selectedAnswer === idx
-                      ? "border-primary bg-primary/5 shadow-md"
-                      : "border-border hover:border-primary/40",
-                  )}
+                  className="cursor-pointer transition-all border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring border-border hover:border-primary/40"
                 >
                   <CardContent className="p-3 text-sm">{option}</CardContent>
                 </Card>
