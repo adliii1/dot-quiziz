@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { HelpCircle, Loader2, AlertCircle } from "lucide-react";
 import {
   cn,
+  decodeHtml,
   DIFFICULTIES,
   QUESTION_COUNTS,
   saveQuizSession,
@@ -35,14 +36,19 @@ export function QuizConfigurator() {
       });
 
       const questions = dataQuizRaw.results.map((q, idx) => {
-        const options = shuffle([q.correct_answer, ...q.incorrect_answers]);
+        const options = shuffle([
+          decodeHtml(q.correct_answer),
+          ...q.incorrect_answers.map(decodeHtml),
+        ]);
         return {
           id: `${idx}`,
-          question: q.question,
+          question: decodeHtml(q.question),
           options,
           answerIndex: options.indexOf(q.correct_answer),
         };
       });
+
+      console.log(questions);
 
       setTimeout(() => {
         setQuizData(questions);
@@ -131,30 +137,6 @@ export function QuizConfigurator() {
               ))}
             </div>
           </fieldset>
-
-          <div>
-            <fieldset>
-              <legend className="flex items-center gap-2 text-sm font-medium mb-3">
-                <HelpCircle className="h-4 w-4" /> Jumlah Soal
-              </legend>
-              <Card className="inline-flex border-2 border-border p-1">
-                <CardContent className="flex gap-1 p-0">
-                  {QUESTION_COUNTS.map((n) => (
-                    <Button
-                      key={n}
-                      type="button"
-                      variant={count === n ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => handleCountChange(n)}
-                      className="w-12"
-                    >
-                      {n}
-                    </Button>
-                  ))}
-                </CardContent>
-              </Card>
-            </fieldset>
-          </div>
         </div>
 
         <fieldset>
@@ -201,8 +183,29 @@ export function QuizConfigurator() {
           </div>
         </fieldset>
       </div>
+      <div className="flex flex-col sm:flex-row sm:items-end items-center justify-between  gap-6 mt-8 md:mb-4 mb-8">
+        <fieldset>
+          <legend className="flex items-center gap-2 text-sm font-medium mb-3">
+            <HelpCircle className="h-4 w-4" /> Jumlah Soal
+          </legend>
+          <Card className="inline-flex border-2 border-border p-1">
+            <CardContent className="flex gap-1 p-0">
+              {QUESTION_COUNTS.map((n) => (
+                <Button
+                  key={n}
+                  type="button"
+                  variant={count === n ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => handleCountChange(n)}
+                  className="w-12"
+                >
+                  {n}
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+        </fieldset>
 
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mt-8">
         <div className="flex flex-col items-stretch md:items-end gap-2 w-full md:w-auto">
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <Button
@@ -215,7 +218,7 @@ export function QuizConfigurator() {
               {isGenerating && (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               )}
-              {isGenerating ? "Generating..." : "Generate"}
+              {isGenerating ? "Lagi ambil soal..." : "Generate"}
             </Button>
 
             <Button
@@ -228,29 +231,25 @@ export function QuizConfigurator() {
               Start Quiz!
             </Button>
           </div>
-
-          {isUnavailable && (
-            <p className="flex items-center gap-1.5 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4" />
-              Soal tidak tersedia untuk kategori yang kamu pilih!
-            </p>
-          )}
-
-          {hasError && (
-            <p className="flex items-center gap-1.5 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4" />
-              Gagal ambil soal nih, kamu coba beberapa saat lagi!
-            </p>
-          )}
-
-          {canStart && (
-            <p className="text-sm text-muted-foreground">
-              {quizData.length} soal udah siap nih. Klik "Start Quiz!" untuk
-              mulai.
-            </p>
-          )}
         </div>
       </div>
+      {isUnavailable && (
+        <p className="flex items-center gap-1.5 text-sm text-destructive text-center">
+          <AlertCircle className="h-4 w-4" />
+          Soal tidak tersedia untuk kategori yang kamu pilih!
+        </p>
+      )}
+      {hasError && (
+        <p className="flex items-center gap-1.5 text-sm text-destructive text-center">
+          <AlertCircle className="h-4 w-4" />
+          Gagal ambil soal nih, kamu coba beberapa saat lagi!
+        </p>
+      )}
+      {canStart && (
+        <p className="text-sm text-muted-foreground text-center">
+          {quizData.length} soal udah siap nih. Klik "Start Quiz!" untuk mulai.
+        </p>
+      )}
     </form>
   );
 }
