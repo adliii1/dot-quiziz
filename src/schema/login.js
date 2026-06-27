@@ -1,11 +1,14 @@
 import z from "zod";
 
 const LoginSchema = z.object({
-  username: z.string().min(8, "username max 8").max(16, "username min 16"),
+  username: z
+    .string()
+    .min(8, "username minimal 8 karakter")
+    .max(16, "username maximal 16 karakter"),
   password: z
     .string()
-    .min(8, "Password minimal 8")
-    .max(16, "Password maximal 16"),
+    .min(8, "Password minimal 8 karakter")
+    .max(16, "Password maximal 16 karakter"),
 });
 
 export default LoginSchema;

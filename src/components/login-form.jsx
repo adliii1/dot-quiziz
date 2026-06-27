@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -107,12 +106,6 @@ export function LoginForm({ className, ...props }) {
               )}
               <Field>
                 <Button type="submit">Login</Button>
-                <Button variant="outline" type="submit">
-                  Login with Google
-                </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
-                </FieldDescription>
               </Field>
             </FieldGroup>
           </form>

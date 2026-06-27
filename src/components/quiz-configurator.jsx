@@ -48,8 +48,6 @@ export function QuizConfigurator() {
         };
       });
 
-      console.log(questions);
-
       setTimeout(() => {
         setQuizData(questions);
         setStatus("ready");
